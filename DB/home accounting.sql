@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 29/12/2024 03:55:29
+ Date: 29/12/2024 13:36:43
 */
 
 SET NAMES utf8mb4;
@@ -31,6 +31,25 @@ CREATE TABLE `category`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Records of category
+-- ----------------------------
+INSERT INTO `category` VALUES (1, 'Витрати', NULL);
+INSERT INTO `category` VALUES (2, 'Прибутки', NULL);
+INSERT INTO `category` VALUES (3, 'М\'ясо', 10);
+INSERT INTO `category` VALUES (4, 'Комуналка', 1);
+INSERT INTO `category` VALUES (5, 'Вода', 4);
+INSERT INTO `category` VALUES (6, 'Зарплатня', 2);
+INSERT INTO `category` VALUES (7, 'Премія', 6);
+INSERT INTO `category` VALUES (8, 'Риба', 10);
+INSERT INTO `category` VALUES (10, 'Продукти', 1);
+INSERT INTO `category` VALUES (20, 'Овочі', 10);
+INSERT INTO `category` VALUES (21, 'Аванс', 2);
+INSERT INTO `category` VALUES (23, 'Паливо', 4);
+INSERT INTO `category` VALUES (24, 'Світло', 4);
+INSERT INTO `category` VALUES (25, 'Відпочинок', 1);
+INSERT INTO `category` VALUES (26, 'Шаурма', 10);
+
+-- ----------------------------
 -- Table structure for credit
 -- ----------------------------
 DROP TABLE IF EXISTS `credit`;
@@ -46,6 +65,11 @@ CREATE TABLE `credit`  (
   CONSTRAINT `UserToCredit` FOREIGN KEY (`UserId`) REFERENCES `users` (`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `chk_credit_amount` CHECK (`Amount` >= 1)
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of credit
+-- ----------------------------
+INSERT INTO `credit` VALUES (1, 1, 2500.00, 4000.00, '2024-12-30 00:00:00', 'Іван');
 
 -- ----------------------------
 -- Table structure for creditpayment
@@ -64,6 +88,11 @@ CREATE TABLE `creditpayment`  (
   CONSTRAINT `Credit` FOREIGN KEY (`CreditId`) REFERENCES `credit` (`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `chk_creditpayment_amount` CHECK (`Amount` >= 1)
 ) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of creditpayment
+-- ----------------------------
+INSERT INTO `creditpayment` VALUES (3, 1, 1500.00, '2024-12-27 00:00:00', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for plan
@@ -87,6 +116,13 @@ CREATE TABLE `plan`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Records of plan
+-- ----------------------------
+INSERT INTO `plan` VALUES (7, 4, 'expense', 1000.00, 5, '2024-12-25', 'Вода', 'Кирило');
+INSERT INTO `plan` VALUES (8, 1, 'income', 400.00, 3, '2025-01-01', 'М\'ясо', 'Іван');
+INSERT INTO `plan` VALUES (10, 2, 'expense', 200.00, 10, '2024-12-28', 'Продукти', 'Веніамін');
+
+-- ----------------------------
 -- Table structure for transaction
 -- ----------------------------
 DROP TABLE IF EXISTS `transaction`;
@@ -105,7 +141,22 @@ CREATE TABLE `transaction`  (
   CONSTRAINT `UserCategory` FOREIGN KEY (`CategoryId`) REFERENCES `category` (`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `UserToTransaction` FOREIGN KEY (`UserId`) REFERENCES `users` (`Id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `chk_transaction_amount` CHECK (`Amount` >= 1)
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of transaction
+-- ----------------------------
+INSERT INTO `transaction` VALUES (10, 1, 3, 'income', 200.00, '2024-12-28 00:00:00', 'М\'ясо', 'Іван');
+INSERT INTO `transaction` VALUES (11, 1, 7, 'income', 600.00, '2024-12-27 00:00:00', 'Премія', 'Іван');
+INSERT INTO `transaction` VALUES (12, 1, 5, 'expense', 100.00, '2024-12-27 00:00:00', 'Вода', 'Іван');
+INSERT INTO `transaction` VALUES (13, 1, 6, 'income', 1000.00, '2025-01-05 00:00:00', 'Зарплатня', 'Іван');
+INSERT INTO `transaction` VALUES (14, 1, 25, 'expense', 200.00, '2025-01-05 00:00:00', 'Відпочинок', 'Іван');
+INSERT INTO `transaction` VALUES (15, 1, 8, 'expense', 200.00, '2024-12-29 00:00:00', 'Риба', 'Іван');
+INSERT INTO `transaction` VALUES (16, 2, 6, 'income', 4000.00, '2024-12-27 00:00:00', 'Зарплатня', 'Веніамін');
+INSERT INTO `transaction` VALUES (17, 2, 25, 'expense', 200.00, '2024-12-27 00:00:00', 'Відпочинок', 'Веніамін');
+INSERT INTO `transaction` VALUES (18, 2, 5, 'income', 200.00, '2024-12-29 00:00:00', 'Вода', 'Веніамін');
+INSERT INTO `transaction` VALUES (19, 1, 21, 'income', 4000.00, '2024-12-28 00:00:00', 'Аванс', 'Іван');
+INSERT INTO `transaction` VALUES (21, 1, 21, 'income', 10000.00, '2024-12-24 00:00:00', 'Аванс', 'Іван');
 
 -- ----------------------------
 -- Table structure for users
@@ -120,6 +171,17 @@ CREATE TABLE `users`  (
   PRIMARY KEY (`Id`, `Name`) USING BTREE,
   INDEX `Id`(`Id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES (1, 'Іван', '123', 'Parents', 14155.00);
+INSERT INTO `users` VALUES (2, 'Веніамін', '321', 'Children', 4139.99);
+INSERT INTO `users` VALUES (3, 'Марія', '4435увкпа', 'Children', 829.02);
+INSERT INTO `users` VALUES (4, 'Кирило', 'віапуке', 'Children', 120.32);
+INSERT INTO `users` VALUES (5, 'Єлизавета', 'вчапівап', 'Children', 13.55);
+INSERT INTO `users` VALUES (7, 'Тимофій', 'сапівап', 'Parents', 272.81);
+INSERT INTO `users` VALUES (8, 'Дмитрій', 'авіа', 'Parents', 802.47);
 
 -- ----------------------------
 -- View structure for carview
