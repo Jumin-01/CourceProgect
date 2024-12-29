@@ -1,0 +1,65 @@
+﻿@model Plan;
+<div class="column_balance">
+<form method="post" class="row">
+    <div class="border p-3 mt-4">
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2>Додати план</h2>
+                <hr />
+            </div>
+        </div>
+        <div asp-validation-summary="All"></div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="CategoryId" class="p-0"></label>
+            <select asp-for="CategoryId" class="form-control">
+                @if (ViewBag.Categories != null)
+                {
+                    @foreach (var category in ViewBag.Categories as List<Category>)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+                else
+                {
+                    <option value="">Категорії відсутні</option>
+                }
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Type" class="p-0"></label>
+            <div class="d-flex">
+                <button type="button" class="btn btn-primary me-2" onclick="document.getElementById('Type').value='income'">Income</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('Type').value='expense'">Expense</button>
+            </div>
+            <input type="hidden" asp-for="Type" id="Type" />
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Amount" class="p-0"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Period" class="p-0"></label>
+            <input asp-for="Period" type="date" class="form-control" />
+            <span asp-validation-for="Period" class="text-danger"></span>
+        </div>
+
+        <div class="row pt-2">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-dark form-control">Додати</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-controller="Parents" asp-action="ListPlan" class="btn btn-outline-dark border form-control">
+                    До списку планів
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+</div>

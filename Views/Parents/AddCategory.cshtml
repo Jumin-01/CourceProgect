@@ -1,0 +1,46 @@
+﻿@model Category;
+<div class="column_balance">
+<form method="post" class="row">
+    <div class="border p-3 mt-4">
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2>Додати категорію</h2>
+                <hr />
+            </div>
+        </div>
+        <div asp-validation-summary="All"></div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Name" class="p-0"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="ParentsCategory" class="p-0"></label>
+            <select asp-for="ParentsCategory" class="form-control">
+                <option value="">(Без батьківської категорії)</option>
+                @if (ViewBag.ParentCategories != null)
+                {
+                    @foreach (var category in ViewBag.ParentCategories as List<Category>)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="ParentsCategory" class="text-danger"></span>
+        </div>
+
+        <div class="row pt-2">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-dark form-control">Додати</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-controller="Parents" asp-action="ListCategory" class="btn btn-outline-dark border form-control">
+                    До списку категорій
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+</div>

@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Home accounting</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/test2.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        @if (User.Identity!.IsAuthenticated)
+        {
+            var userName = User.Identity.Name;
+            var balance = 0.0m; // Значення балансу за замовчуванням
+
+            // Виконуємо пошук балансу користувача
+            using (var dbContext = new HomeAccountingContext())
+            {
+                var user = dbContext.Users.FirstOrDefault(u => u.Name == userName);
+                if (user != null)
+                {
+                    balance = user.Balance ?? 0.0m; // Додаємо перевірку на null і встановлюємо значення за замовчуванням
+                }
+            }
+
+            <div class="row" style="justify-content: flex-end;">
+                <div class="col-2 text-end align-middle">
+                    <span class="modal-title user_login" style="line-height: 2.5;">
+                        <a asp-controller="Parents" asp-action="EditUser" asp-route-id="@User.Identity.Name" style="text-decoration: none; color: inherit;">
+                            @User.Identity.Name
+                        </a>
+                        Баланс: @balance
+                    </span>
+                </div>
+
+                <div class="col-1 text-end">
+                    <form asp-controller="Home" asp-action="Logoff">
+                        <button class="but-log btn btn-danger mx-2 text-end">Вихід</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row" style="justify-content: flex-end;">
+                <div class="col-1 text-end">
+                    <form asp-action="Login">
+                        <button class="but-log btn btn-danger mx-2 text-end">Вхід</button>
+                    </form>
+                </div>
+            </div>
+        }
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Home accounting</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Children"))
+                            {
+                                
+                                <li>
+                                    <a class="nav-link" asp-controller="Parents" asp-action="ListTransaction">
+                                        Транзакції
+                                    </a>
+                                    &nbsp;
+                                </li>
+                                <li>
+
+                                    <a class="nav-link" asp-controller="Parents" asp-action="ListPlan">
+                                        Плануємі транзакції
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-controller="Chart" asp-action="ListChart">
+                                        Звіти
+                                    </a>
+                                </li>                               
+                                
+                            }
+
+                            if (User.IsInRole("Parents"))
+                            {
+                               
+                                <li>
+                                    <a class="nav-link" asp-controller="Parents" asp-action="ListTransaction">
+                                        Транзакції
+                                    </a>
+                                    &nbsp;
+                                </li>
+                                <li>
+
+                                    <a class="nav-link" asp-controller="Parents" asp-action="ListPlan">
+                                        Плануємі транзакції
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-controller="Chart" asp-action="ListChart">
+                                        Звіти
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-controller="Parents" asp-action="ListCredit">
+                                        Кредити
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-controller="Parents" asp-action="ListCategory">
+                                        Категорії
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Home accounting - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

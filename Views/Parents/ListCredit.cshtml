@@ -1,0 +1,54 @@
+﻿@model List<Credit>;
+<div class="column_balance">
+<form id="list_credit_form" method="post" class="row">
+    <div class="conteiner">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2>
+                    Кредити
+                </h2>
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Parents" asp-action="AddCredit" class="btn btn-dark">
+                    <i class="bi bi-plus-circle-fill"></i> Додати Кредит
+                </a>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Ім'я</th>
+                <th>Сума</th>
+                <th>Залишок</th>
+                <th>Дата</th>
+                <th>Редагувати</th>
+                <th>Виплати</th>
+                <th>Видалити</th>
+            </tr>
+            @foreach (var credit in Model)
+            {
+                <tr>
+                    <td>@credit.UserName</td>
+                    <td>@credit.Amount</td>
+                    <td>@credit.RemainingAmount</td>
+                    <td>@credit.Date?.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-controller="Parents" asp-action="EditCredit" asp-route-id="@credit.Id" class="btn btn-info mx-2">
+                            <i class="bi bi-opencollective"></i>Редагувати
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Parents" asp-action="ListCreditPayment" asp-route-id="@credit.Id" class="btn btn-info mx-2">
+                            <i class="bi bi-opencollective"></i>Виплати
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Parents" asp-action="DeleteCredit" asp-route-id="@credit.Id" class="btn btn-danger mx-2">
+                            <i class="bi bi-opencollective"></i>Видалити
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</form>
+</div>

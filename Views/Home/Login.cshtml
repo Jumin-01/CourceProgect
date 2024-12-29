@@ -1,0 +1,35 @@
+﻿@using Home_accounting.DataTransferObjects;
+@model UserDto;
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="tube">
+    <form asp-action="LoginPost">
+        @Html.HiddenFor(userDto => userDto.ReturnUrl)
+        <div class="container">
+            <div class="row justify-content-center">
+
+                <div class="col-2">
+                    <div>
+                        <label></label>
+                        <input asp-for="Name" class="form-control log-label" placeholder="Login" />
+                        <span asp-validation-for="Name" class=""></span>
+                    </div>
+                    <div>
+                        <label></label>
+                        <input asp-for="Password" type="password" class="form-control log-label" placeholder="Password" />
+                        <span asp-validation-for="Password" class=""></span>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-info mt-4 butt-log" type="submit">Вхід</button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="@ViewBag.RegistrationUrl" class="btn btn-secondary">Реєстрація</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

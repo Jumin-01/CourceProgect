@@ -1,0 +1,45 @@
+﻿@model Category;
+<div class="column_balance">
+<form method="post" asp-action="EditCategory" class="row">
+    <div class="border p-3 mt-4">
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2>Редагувати категорію</h2>
+                <hr />
+            </div>
+        </div>
+        <div asp-validation-summary="All"></div>
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Name" class="p-0"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="ParentsCategory" class="p-0"></label>
+            <select asp-for="ParentsCategory" class="form-control">
+                <option value="">(Без батьківської категорії)</option>
+                @foreach (var category in ViewBag.ParentCategories as List<Category>)
+                {
+                    <option value="@category.Id" selected="@(Model.ParentsCategory == category.Id ? "selected" : null)">@category.Name</option>
+                }
+            </select>
+            <span asp-validation-for="ParentsCategory" class="text-danger"></span>
+        </div>
+
+        <div class="row pt-2">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-dark form-control">Зберегти</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-controller="Parents" asp-action="ListCategory" class="btn btn-outline-dark border form-control">
+                    До списку категорій
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+</div>

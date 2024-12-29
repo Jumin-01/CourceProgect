@@ -1,0 +1,37 @@
+﻿@model Credit;
+<div class="column_balance">
+<form method="post" class="row">
+    <div class="border p-3 mt-4">
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2>Додати кредит</h2>
+                <hr />
+            </div>
+        </div>
+        <div asp-validation-summary="All"></div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Amount" class="p-0"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 row p-1">
+            <label asp-for="Date" class="p-0"></label>
+            <input asp-for="Date" type="date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <div class="row pt-2">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-dark form-control">Додати</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-controller="Parents" asp-action="ListCredit" class="btn btn-outline-dark border form-control">
+                    До списку кредитів
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+</div>

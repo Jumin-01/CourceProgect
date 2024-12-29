@@ -1,0 +1,54 @@
+﻿@model List<Transaction>;
+<div class="column_balance">
+<form id="list_plan_form" method="post" class="row">
+    <div class="conteiner">
+        <div class="row pt-4">
+            <div class="col-6">
+                <h2>
+                    Транзакції
+                </h2>
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Parents" asp-action="AddTransaction" class="btn btn-dark">
+                    <i class="bi bi-plus-circle-fill"></i> Додати Транзакцію
+                </a>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                
+                <th>Ім'я'</th>
+                <th>Категорія</th>
+                <th>Тип</th>
+                <th>Сума</th>
+                <th>Дата</th>
+                <th>Редагувати</th>
+                <th>Видалити</th>
+            </tr>
+            @foreach (var trans in Model)
+            {
+                <tr>
+                    
+                    <td>@trans.UserName</td>
+                    <td>@trans.CategoryName</td>
+                    <td>@trans.Type</td>
+                    <td>@trans.Amount</td>
+                    <td>@trans.Date</td>
+
+                    <td>
+                        <a asp-controller="Parents" asp-action="EditTransaction" asp-route-id="@trans.Id" class="btn btn-info mx-2">
+                            <i class="bi bi-opencollective"></i>Редагувати
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-controller="Parents" asp-action="DeleteTransaction" asp-route-id="@trans.Id" class="btn btn-danger mx-2">
+                            <i class="bi bi-opencollective"></i>Видалити
+                        </a>
+                    </td>
+
+                </tr>
+            }
+        </table>
+    </div>
+</form>
+</div>

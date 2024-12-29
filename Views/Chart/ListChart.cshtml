@@ -1,0 +1,238 @@
+﻿<div class="column_balance">
+    <div class="navigation-buttons">
+        <button id="prevMonth" class="btn btn-info mx-2">« Попередній місяць</button>
+        <span id="currentMonth"></span>
+        <button id="nextMonth" class="btn btn-info mx-2">Наступний місяць »</button>
+    </div>
+    <section id="balance">
+        <h2>Доходи та витрати по місяцях</h2>
+
+        <!-- Кнопки навігації -->
+        
+
+        <!-- Графік -->
+        <canvas id="incomeExpenseChart" width="800" height="400"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+
+                // Початковий місяць
+                let currentDate = new Date();
+
+                // Функція для форматування дати як "Місяць Рік"
+                function formatDate(date) {
+                    const options = { year: 'numeric', month: 'long' };
+                    return date.toLocaleDateString('uk-UA', options);
+                }
+
+                // Оновлення тексту для поточного місяця
+                function updateCurrentMonthText() {
+                    document.getElementById('currentMonth').textContent = formatDate(currentDate);
+                }
+
+                // Побудова графіка
+                let chart;
+                function renderChart(dates, income, expenses) {
+                    if (chart) {
+                        chart.destroy(); // Знищити старий графік перед створенням нового
+                    }
+                    chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [
+                                {
+                                    label: 'Доходи',
+                                    data: income,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    tension: 0.4
+                                },
+                                {
+                                    label: 'Витрати',
+                                    data: expenses,
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    tension: 0.4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Дата'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Сума'
+                                    },
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Завантаження даних для графіка
+                async function loadChartData(date) {
+                    const month = date.getMonth() + 1; // Місяці в JS починаються з 0
+                    const year = date.getFullYear();
+                    try {
+                        const response = await fetch(`/Chart/GetChartData?month=${month}&year=${year}`);
+                        const data = await response.json();
+                        renderChart(data.dates, data.income, data.expenses);
+                    } catch (error) {
+                        console.error('Помилка завантаження даних:', error);
+                    }
+                }
+
+                // Події для кнопок навігації
+                document.getElementById('prevMonth').addEventListener('click', function () {
+                    currentDate.setMonth(currentDate.getMonth() - 1); // Перехід до попереднього місяця
+                    updateCurrentMonthText();
+                    loadChartData(currentDate);
+                });
+
+                document.getElementById('nextMonth').addEventListener('click', function () {
+                    currentDate.setMonth(currentDate.getMonth() + 1); // Перехід до наступного місяця
+                    updateCurrentMonthText();
+                    loadChartData(currentDate);
+                });
+
+                // Ініціалізація
+                updateCurrentMonthText();
+                loadChartData(currentDate);
+            });
+        </script>
+    </section>
+</div>
+
+<div class="column_balance">
+    <section id="category-balance">
+        <h2>Доходи та витрати по категоріях</h2>
+
+        <!-- Графіки розміщені поряд -->
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <h3>Доходи</h3>
+                <canvas id="incomeByCategoryChart" width="200" height="200"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <h3>Витрати</h3>
+                <canvas id="expenseByCategoryChart" width="200" height="200"></canvas>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const incomeCategoryCtx = document.getElementById('incomeByCategoryChart').getContext('2d');
+                const expenseCategoryCtx = document.getElementById('expenseByCategoryChart').getContext('2d');
+
+                let currentDate = new Date();
+                let incomeChart, expenseChart;
+
+                // Функція для форматування дати
+                function formatDate(date) {
+                    const options = { year: 'numeric', month: 'long' };
+                    return date.toLocaleDateString('uk-UA', options);
+                }
+
+                // Оновлення тексту поточного місяця
+                function updateCurrentMonthText() {
+                    document.getElementById('currentMonth').textContent = formatDate(currentDate);
+                }
+
+                // Завантаження даних для кругових графіків
+                async function loadCategoryChartData(date) {
+                    const month = date.getMonth() + 1;
+                    const year = date.getFullYear();
+
+                    try {
+                        const response = await fetch(`/Chart/GetCategoryData?month=${month}&year=${year}`);
+                        const data = await response.json();
+
+                        // Оновлення графіка доходів
+                        if (incomeChart) {
+                            incomeChart.destroy();
+                        }
+                        incomeChart = new Chart(incomeCategoryCtx, {
+                            type: 'pie',
+                            data: {
+                                labels: data.incomeLabels,
+                                datasets: [{
+                                    data: data.incomeData,
+                                    backgroundColor: [
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(54, 162, 235, 0.6)',
+                                        'rgba(153, 102, 255, 0.6)',
+                                        'rgba(255, 206, 86, 0.6)',
+                                        'rgba(255, 159, 64, 0.6)'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        });
+
+                        // Оновлення графіка витрат
+                        if (expenseChart) {
+                            expenseChart.destroy();
+                        }
+                        expenseChart = new Chart(expenseCategoryCtx, {
+                            type: 'pie',
+                            data: {
+                                labels: data.expenseLabels,
+                                datasets: [{
+                                    data: data.expenseData,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.6)',
+                                        'rgba(255, 205, 86, 0.6)',
+                                        'rgba(153, 102, 255, 0.6)',
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(54, 162, 235, 0.6)'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: false
+                            }
+                        });
+
+                    } catch (error) {
+                        console.error('Помилка завантаження даних по категоріях:', error);
+                    }
+                }
+
+                // Події для кнопок
+                document.getElementById('prevMonth').addEventListener('click', function () {
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                    updateCurrentMonthText();
+                    loadCategoryChartData(currentDate);
+                });
+
+                document.getElementById('nextMonth').addEventListener('click', function () {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                    updateCurrentMonthText();
+                    loadCategoryChartData(currentDate);
+                });
+
+                // Ініціалізація
+                updateCurrentMonthText();
+                loadCategoryChartData(currentDate);
+            });
+        </script>
+    </section>
+</div>
+
